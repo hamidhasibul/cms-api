@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { CookieOptions, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { db } from "../../utils/db";
@@ -46,12 +46,16 @@ export const loginUser = async (req: Request, res: Response) => {
         data: { refreshToken },
       });
 
-      res.cookie("jwt", refreshToken, {
+      const cookieOptions: CookieOptions = {
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000,
         secure: true,
         sameSite: "none",
-      });
+      };
+
+      res
+        .cookie("jwt", refreshToken, cookieOptions)
+        .cookie("accessToken", accessToken, cookieOptions);
 
       res.json({
         status: "success",

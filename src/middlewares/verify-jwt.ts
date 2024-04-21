@@ -2,14 +2,14 @@ import { NextFunction, Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
 export const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
-  const authHeader =
-    req.headers.authorization || (req.headers.Authorization as string);
+  const token =
+    (req.cookies?.accessToken as string) ||
+    (req.headers.authorization as string).replace("Bearer ", "") ||
+    (req.headers.Authorization as string).replace("Bearer ", "");
 
-  if (!authHeader?.startsWith("Bearer ")) {
+  if (!token) {
     return res.status(401).json({ status: "error", message: "unauthorized" });
   }
-
-  const token = authHeader.split(" ")[1];
 
   jwt.verify(
     token,

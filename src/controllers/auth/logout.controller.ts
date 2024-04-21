@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { CookieOptions, Request, Response } from "express";
 import { db } from "../../utils/db";
 
 export const handleLogout = async (req: Request, res: Response) => {
@@ -14,12 +14,16 @@ export const handleLogout = async (req: Request, res: Response) => {
       where: { refreshToken },
     });
 
+    const cookieOptions: CookieOptions = {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    };
+
     if (!foundUser) {
-      res.clearCookie("jwt", {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-      });
+      res
+        .clearCookie("jwt", cookieOptions)
+        .clearCookie("accessToken", cookieOptions);
       return res.status(204).end();
     }
 
@@ -32,11 +36,9 @@ export const handleLogout = async (req: Request, res: Response) => {
       },
     });
 
-    res.clearCookie("jwt", {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-    });
+    res
+      .clearCookie("jwt", cookieOptions)
+      .clearCookie("accessToken", cookieOptions);
 
     res.status(204).end();
   } catch (error) {

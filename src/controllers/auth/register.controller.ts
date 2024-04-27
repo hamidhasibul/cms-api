@@ -10,7 +10,7 @@ export const registerUser = async (req: Request, res: Response) => {
   if (!name || !email || !phone || !password) {
     return res
       .status(400)
-      .json({ status: "error", message: "Valid credentials required" });
+      .json({ success: false, message: "Valid credentials required" });
   }
 
   const userExists = await db.user.findFirst({
@@ -22,7 +22,7 @@ export const registerUser = async (req: Request, res: Response) => {
   if (userExists) {
     return res
       .status(409)
-      .json({ status: "error", message: "User already exists" });
+      .json({ success: false, message: "User already exists" });
   }
 
   try {
@@ -45,11 +45,11 @@ export const registerUser = async (req: Request, res: Response) => {
     });
 
     res.status(201).json({
-      status: "success",
+      success: true,
       message: `user ${user.name} has been created`,
     });
   } catch (error: any) {
     console.log(error);
-    res.status(500).json({ status: "error", message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };

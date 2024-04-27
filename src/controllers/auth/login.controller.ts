@@ -9,7 +9,7 @@ export const loginUser = async (req: Request, res: Response) => {
   if (!phone || !password) {
     return res
       .status(400)
-      .json({ status: "error", message: "valid credentials required" });
+      .json({ success: false, message: "valid credentials required" });
   }
 
   try {
@@ -19,7 +19,7 @@ export const loginUser = async (req: Request, res: Response) => {
     });
 
     if (!foundUser) {
-      return res.status(401).json({ status: "error", message: "unauthorized" }); // 401 - unauthorized
+      return res.status(401).json({ success: false, message: "unauthorized" }); // 401 - unauthorized
     }
 
     const match = await bcrypt.compare(password, foundUser.password);
@@ -58,17 +58,17 @@ export const loginUser = async (req: Request, res: Response) => {
         .cookie("accessToken", accessToken, cookieOptions);
 
       res.json({
-        status: "success",
+        success: true,
         message: `Welcome ${foundUser.name}!!`,
         accessToken,
       });
     } else {
-      return res.status(401).json({ status: "error", message: "unauthorized" });
+      return res.status(401).json({ success: false, message: "unauthorized" });
     }
   } catch (error) {
     console.error(error);
     return res
       .status(500)
-      .json({ status: "error", message: "internal server error" });
+      .json({ success: false, message: "internal server error" });
   }
 };

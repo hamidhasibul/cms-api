@@ -43,6 +43,6 @@ export const handleLogout = async (req: Request, res: Response) => {
     res.status(204).end();
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ status: "error", message: error });
+    return res.status(500).json({ success: false, message: error });
   }
 };

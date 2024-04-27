@@ -31,7 +31,7 @@ app.use(credentials);
 app.use(cors(corsOptions));
 
 // Routes
-app.get("/", (req, res) => {
+app.get("/test", (req, res) => {
   res.json({ message: "hello from the server-side" });
 });
 

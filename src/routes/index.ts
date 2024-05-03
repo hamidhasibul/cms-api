@@ -6,6 +6,7 @@ import logoutRouter from "./auth/logout.router";
 import refreshTokenRouter from "./auth/refresh-token.router";
 
 import usersRouter from "./api/users.router";
+import storeRouter from "./api/store.router";
 
 const router: Router = Router();
 
@@ -17,5 +18,6 @@ router.use("/refresh-token", refreshTokenRouter);
 
 // API routes
 router.use("/users", usersRouter);
+router.use("/stores", storeRouter);
 
 export default router;

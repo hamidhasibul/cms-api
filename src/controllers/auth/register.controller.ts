@@ -26,7 +26,10 @@ export const registerUser = async (req: Request, res: Response) => {
   }
 
   try {
-    const fileNames = await uploadFiles(files);
+    let fileNames;
+    if (files) {
+      fileNames = await uploadFiles(files);
+    }
     const hashedPwd = await bcrypt.hash(password, 10);
 
     const user = await db.user.create({
@@ -35,7 +38,7 @@ export const registerUser = async (req: Request, res: Response) => {
         email,
         phone,
         password: hashedPwd,
-        image: fileNames.image,
+        image: fileNames?.image,
         role: {
           create: {
             role: "USER",

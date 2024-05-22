@@ -23,7 +23,8 @@ export const handleLogout = async (req: Request, res: Response) => {
     if (!foundUser) {
       res
         .clearCookie("jwt", cookieOptions)
-        .clearCookie("accessToken", cookieOptions);
+        .clearCookie("accessToken", cookieOptions)
+        .clearCookie("userId", cookieOptions);
       return res.status(204).end();
     }
 
@@ -38,7 +39,8 @@ export const handleLogout = async (req: Request, res: Response) => {
 
     res
       .clearCookie("jwt", cookieOptions)
-      .clearCookie("accessToken", cookieOptions);
+      .clearCookie("accessToken", cookieOptions)
+      .clearCookie("userId", cookieOptions);
 
     res.status(204).end();
   } catch (error) {

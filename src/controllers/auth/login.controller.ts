@@ -55,7 +55,8 @@ export const loginUser = async (req: Request, res: Response) => {
 
       res
         .cookie("jwt", refreshToken, cookieOptions)
-        .cookie("accessToken", accessToken, cookieOptions);
+        .cookie("accessToken", accessToken, cookieOptions)
+        .cookie("userId", foundUser.id, cookieOptions);
 
       res.json({
         success: true,

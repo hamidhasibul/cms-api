@@ -25,11 +25,16 @@ export const createStore = async (req: Request, res: Response) => {
           },
         },
       },
+      select: {
+        name: true,
+        id: true,
+      },
     });
 
     res.status(200).json({
       success: true,
       message: `store ${createdStore.name} has been created`,
+      createdStore,
     });
   } catch (error) {
     console.error(error);
@@ -55,7 +60,108 @@ export const getStore = async (req: Request, res: Response) => {
         .json({ success: false, message: "Store not found!" });
     }
 
-    res.status(200).json({ success: true, storeId });
+    res.status(200).json({ success: true, storeId, store });
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+/* export const getUserStores = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+
+    const stores = await db.store.findMany({
+      where: {
+        userId,
+      },
+    });
+
+    if (!stores) {
+      return res
+        .status(404)
+        .json({ success: false, message: "No store found" });
+    }
+
+    res.status(200).json({ success: true, stores });
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+};
+ */
+
+export const updateStore = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user;
+    const { name } = req.body;
+    const { storeId } = req.params;
+
+    console.log(userId);
+
+    if (!userId) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Unauthenticated" });
+    }
+    if (!name) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Name is required" });
+    }
+    if (!storeId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Store ID is required" });
+    }
+
+    await db.store.updateMany({
+      where: {
+        id: storeId,
+        userId,
+      },
+      data: {
+        name,
+      },
+    });
+    res.status(200).json({ success: true, message: "Store Updated" });
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+export const deleteStore = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user;
+
+    const { storeId } = req.params;
+
+    if (!userId) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Unauthenticated" });
+    }
+
+    if (!storeId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Store ID is required" });
+    }
+
+    await db.store.deleteMany({
+      where: {
+        id: storeId,
+        userId,
+      },
+    });
+    res.status(200).json({ success: true, message: "Store deleted" });
   } catch (error) {
     console.error(error);
     return res
